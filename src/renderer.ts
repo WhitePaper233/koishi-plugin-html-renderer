@@ -57,10 +57,23 @@ class HTMLRenderer extends Service {
   // 启动
   public async start() {
     // 检查浏览器是否安装
-    const chromium_path = existsSync(chromium.executablePath());
-    const firefox_path = existsSync(firefox.executablePath());
-    const webkit_path = existsSync(webkit.executablePath());
-    if (!(chromium_path || firefox_path || webkit_path)) {
+    let browser_exsit: boolean = false;
+    switch (this.options.renderer_browser) {
+      case 'firefox': {
+        browser_exsit = existsSync(firefox.executablePath());
+        break;
+      }
+      case 'webkit': {
+        browser_exsit = existsSync(webkit.executablePath());
+        break;
+      }
+      default: {
+        browser_exsit = existsSync(chromium.executablePath());
+        break;
+      }
+    }
+
+    if (!browser_exsit) {
       this.logger.info("未检测到浏览器，即将安装浏览器");
       await this.install_browser();
     }
@@ -180,10 +193,19 @@ class HTMLRenderer extends Service {
 
     // 如果设置了火狐浏览器 则安装火狐浏览器 否则安装chromium
     let browser_type: string;
-    if (this.options.renderer_browser === "firefox") {
-      browser_type = "firefox";
-    } else {
-      browser_type = "chromium";
+    switch (this.options.renderer_browser) {
+      case 'firefox': {
+        browser_type = 'firefox';
+        break;
+      }
+      case 'webkit': {
+        browser_type = 'webkit';
+        break;
+      }
+      default: {
+        browser_type = 'chromium';
+        break;
+      }
     }
     install_command += ` ${browser_type}`;
 

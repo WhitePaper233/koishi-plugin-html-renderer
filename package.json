@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-html-renderer",
   "description": "使用EJS和playwright实现的Koishi平台原生HTML渲染插件",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "contributors": [
     "WhitePaper233 <1423634265@qq.com>"
   ],

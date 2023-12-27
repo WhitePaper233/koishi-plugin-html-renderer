@@ -47,6 +47,6 @@ declare class HTMLRenderer extends Service {
         };
         base_url: string;
     }, wait_time?: number, type?: "png" | "jpeg", quality?: number, scale?: number): Promise<Buffer>;
-    protected install_browser(): void;
+    protected install_browser(): Promise<void>;
 }
 export { HTMLRenderer, RendererOptions };

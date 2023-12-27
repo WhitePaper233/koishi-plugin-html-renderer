@@ -8,13 +8,13 @@ declare module "koishi" {
 }
 
 export const Config: Schema<RendererOptions> = Schema.object({
-  renderer_browser: Schema.string()
+  renderer_browser: Schema.union(["chromium", "webkit", "firefox"])
     .default("chromium")
     .description("默认使用的浏览器"),
+  browser_channel: Schema.string().description("浏览器通道"),
   browser_download_host: Schema.string().description("浏览器下载镜像"),
   browser_proxy_host: Schema.string().description("浏览器代理地址"),
-  browser_channel: Schema.string().description("浏览器通道"),
-});
+}).description("HTML 浏览器配置");
 
 export const name = "html_renderer";
 
