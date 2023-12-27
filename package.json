@@ -1,0 +1,44 @@
+{
+  "name": "koishi-plugin-html-renderer",
+  "description": "使用EJS和playwright实现的Koishi平台原生HTML渲染插件",
+  "version": "0.0.1",
+  "contributors": [
+    "WhitePaper233 <1423634265@qq.com>"
+  ],
+  "homepage": "https://github.com/WhitePaper233/koishi-plugin-html-renderer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WhitePaper233/koishi-plugin-html-renderer.git"
+  },
+  "koishi": {
+    "description": {
+      "en": "A service using EJS and Playwright to render html template to picture buffer",
+      "zh": "使用EJS和playwright实现的Koishi平台原生HTML渲染服务插件"
+    }
+  },
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin",
+    "html",
+    "renderer",
+    "ejs"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.16.2"
+  },
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "playwright": "^1.40.1"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3"
+  }
+}
