@@ -1,8 +1,10 @@
 import { render } from "ejs";
 import { readFile } from "fs/promises";
+import { existsSync } from 'fs'
 import { Browser, LaunchOptions, chromium, firefox, webkit } from "playwright";
 import { Context, Service } from "koishi";
 import { exec } from "child_process";
+import { promisify } from "util";
 
 interface RendererOptions {
   /**
@@ -55,12 +57,12 @@ class HTMLRenderer extends Service {
   // 启动
   public async start() {
     // 检查浏览器是否安装
-    const chromium_path = chromium.executablePath();
-    const firefox_path = firefox.executablePath();
-    const webkit_path = webkit.executablePath();
-    if (!chromium_path && !firefox_path && !webkit_path) {
+    const chromium_path = existsSync(chromium.executablePath());
+    const firefox_path = existsSync(firefox.executablePath());
+    const webkit_path = existsSync(webkit.executablePath());
+    if (!(chromium_path || firefox_path || webkit_path)) {
       this.logger.info("未检测到浏览器，即将安装浏览器");
-      this.install_browser();
+      await this.install_browser();
     }
 
     // 配置启动参数
@@ -156,7 +158,7 @@ class HTMLRenderer extends Service {
   }
 
   // 安装浏览器
-  protected install_browser() {
+  protected async install_browser() {
     // 如果设置了镜像源 则使用镜像源下载 否则使用默认源下载
     if (this.options.browser_download_host) {
       // 设置环境变量
@@ -174,7 +176,7 @@ class HTMLRenderer extends Service {
       process.env.HTTPS_PROXY = this.options.browser_proxy_host;
     }
 
-    let install_command: string = "npx playwright install-deps";
+    let install_command: string = "npx playwright install";
 
     // 如果设置了火狐浏览器 则安装火狐浏览器 否则安装chromium
     let browser_type: string;
@@ -187,12 +189,14 @@ class HTMLRenderer extends Service {
 
     // 执行安装命令
     this.logger.info(`正在安装浏览器: ${browser_type}`);
-    exec(install_command, (error) => {
-      if (error) {
-        this.logger.error(`安装浏览器失败: ${error.message}`);
-        throw error;
-      }
-    });
+    try {
+      await promisify(exec)(install_command);
+    } catch (error) {
+      this.logger.error(`安装浏览器失败: ${error.message}`);
+      throw error;
+    }
+
+    this.logger.info(`浏览器: ${browser_type} 安装成功`);
   }
 }
 
