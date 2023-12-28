@@ -117,10 +117,7 @@ class HTMLRenderer extends Service {
    * @param template_name - HTML 模板文件名
    * @param templates_args - HTML 模板参数
    * @param page_args - 页面参数 (optional, default: { 'viewport': { 'width': 800, 'height': 600 }, 'base_url': `file://${process.cwd()}/templates/` }).
-   * @param wait_time - 页面加载等待时间 (optional, default: 0).
-   * @param type - 输出图片类型 (optional, default: 'png').
-   * @param quality - 输出图片质量 type 为 'png' 时无效 (optional, default: undefined).
-   * @param scale - 输出图片缩放 (optional, default: 2).
+   * @param render_options - 渲染选项 (optional, default: { { wait_time: 0, type: "png", quality: undefined, scale: 2 } })
    * @returns - 返回图片的 Buffer
    */
   public async render_html(
@@ -129,12 +126,19 @@ class HTMLRenderer extends Service {
     templates_arg: Object,
     page_args = {
       viewport: { width: 800, height: 600 },
-      base_url: `file://${process.cwd()}/templates/`,
+      base_url: `file://${template_path}/`,
     },
-    wait_time = 0,
-    type: "png" | "jpeg" = "png",
-    quality: number = undefined,
-    scale: number = 2
+    render_options: {
+      wait_time: number,
+      type: "png" | "jpeg",
+      quality: number,
+      scale: number,
+    } = {
+      wait_time: 0,
+      type: "png",
+      quality: undefined,
+      scale: 2,
+    }
   ): Promise<Buffer> {
     // 读取模板文件
     let template: string;
@@ -154,17 +158,17 @@ class HTMLRenderer extends Service {
     const page = await this.browser.newPage({
       viewport: page_args.viewport,
       baseURL: page_args.base_url,
-      deviceScaleFactor: scale,
+      deviceScaleFactor: render_options.scale,
     });
     await page.goto(template_path);
     await page.setContent(html, { waitUntil: "networkidle" });
-    await page.waitForTimeout(wait_time);
+    await page.waitForTimeout(render_options.wait_time);
 
     // 截图
     const image = await page.screenshot({
       fullPage: true,
-      type: type,
-      quality: quality,
+      type: render_options.type,
+      quality: render_options.quality,
     });
 
     return image;
