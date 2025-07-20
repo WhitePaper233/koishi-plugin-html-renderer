@@ -42,7 +42,7 @@ interface RenderOptions {
     // 类型
     type: "png" | "jpeg";
     // 质量
-    quality: number;
+    quality?: number;
     // 缩放
     scale: number;
 }
@@ -50,7 +50,7 @@ interface RenderOptions {
 // HTML 渲染器服务类
 export default class HTMLRenderer extends Service {
     // 浏览器对象
-    protected browser: Browser;
+    protected browser!: Browser;
 
     // 选项
     protected options: BrowserOptions = {
@@ -98,7 +98,8 @@ export default class HTMLRenderer extends Service {
         // 配置启动参数
         const launch_options: LaunchOptions = {};
         if (this.options.browser_proxy_host) {
-            launch_options.proxy.server = this.options.browser_proxy_host;
+            if (!launch_options.proxy) launch_options.proxy = { server: this.options.browser_proxy_host };
+            else launch_options.proxy.server = this.options.browser_proxy_host;
         }
         if (this.options.browser_channel) {
             launch_options.channel = this.options.browser_channel;
@@ -165,7 +166,7 @@ export default class HTMLRenderer extends Service {
             const data = await readFile(`${template_path}/${template_name}`, "utf-8");
             template = data;
         } catch (error) {
-            this._logger.error(`读取模板文件失败: ${error.message}`);
+            this._logger.error(`读取模板文件失败: ${(error as any).message}`);
             throw error;
         }
 
@@ -222,7 +223,7 @@ export default class HTMLRenderer extends Service {
         try {
             page_string = await readFile(`${file_path}/${file_name}`, "utf-8");
         } catch (error) {
-            this._logger.error(`读取 html 文件失败: ${error.message}`);
+            this._logger.error(`读取 html 文件失败: ${(error as any).message}`);
             throw error;
         }
 
