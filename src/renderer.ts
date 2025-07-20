@@ -177,7 +177,6 @@ export default class HTMLRenderer extends Service {
             ...page_options,
             deviceScaleFactor: render_options.scale,
         });
-        await page.goto(template_path);
         await page.setContent(html, { waitUntil: "networkidle" });
         await page.waitForTimeout(render_options.wait_time);
 
@@ -232,7 +231,6 @@ export default class HTMLRenderer extends Service {
             ...page_options,
             deviceScaleFactor: render_options.scale,
         });
-        await page.goto(file_path);
         await page.setContent(page_string, { waitUntil: "networkidle" });
         await page.waitForTimeout(render_options.wait_time);
 
@@ -276,7 +274,6 @@ export default class HTMLRenderer extends Service {
             ...page_options,
             deviceScaleFactor: render_options.scale,
         });
-        await page.goto(url);
         await page.waitForTimeout(render_options.wait_time);
 
         // 截图
